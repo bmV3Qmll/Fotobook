@@ -10,6 +10,10 @@ class Post < ApplicationRecord
   validates :description, presence: true, length: { maximum: 300 }
   validates :image, presence: true, file_size: { less_than_or_equal_to: 5.megabytes }, file_content_type: { allow: ['image/jpeg', 'image/png', 'image/gif'] }, if: :is_not_album?
 
+  scope :view, -> { where(mode: true).order(updated_at: :desc) }
+  scope :photos, -> { where(is_album: false) }
+  scope :albums, -> { where(is_album: true).includes(:album_images) }
+
   private
     def is_not_album?
       is_album == false

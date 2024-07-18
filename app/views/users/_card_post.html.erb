@@ -1,0 +1,28 @@
+<% posts.each do |post| %>
+  <div class="col-6 col-sm-4 col-md-3 mb-3">
+    <div class="card">
+      <div class="row g-0">
+        <div class="position-relative">
+          <% if is_album %>
+            <%= render 'posts/special_image', image: post.album_images.first.image.thumb.url %>
+          <% else %>
+            <%= image_tag post.image.thumb.url, class: "card-img rounded" %>
+          <% end %>
+          <% if is_self %>
+            <%= link_to "Edit", edit_post_path(post), class: "btn btn-edit" %>
+          <% end %>
+          <% if is_album %>
+            <div class="position-absolute number-overlay">
+              <p><b class="fs-4"><%= post.album_images.count %></b> PHOTOS</p>
+            </div>
+          <% end %>
+          <% if not post.mode %>
+            <i class="fa fa-lock border rounded-circle" aria-hidden="true"></i>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <p class="card-title text-center text-truncate"><%= post.title %></p>
+  </div>
+<% end %>
+<%= will_paginate posts, class: "d-flex justify-content-center digg_pagination" %>
