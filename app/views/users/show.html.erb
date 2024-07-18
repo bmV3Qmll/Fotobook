@@ -1,0 +1,117 @@
+<% content_for :css do %>
+  <%= stylesheet_link_tag "users" %>
+<% end %>
+
+<%= render "shared/menu" do %>
+  <div class="row mb-3">
+    <div class="col-7 col-sm-5 col-md-3">
+      <% if @user.avatar? %>
+        <%= image_tag @user.avatar.thumb.url, class: "img-fluid border rounded-circle" %>
+      <% else %>
+        <%= lavatar_tag(@user.short_name, 200, class: "img-fluid border rounded-circle") %>
+      <% end %>
+    </div>
+    <div class="col-5 col-sm-7 col-md-9">
+      <% if @self %>
+        <a href="/users/edit" class="btn btn-outline-primary rounded-pill">Edit Profile</a>
+      <% elsif user_signed_in? %>
+        <button type="button" class="btn btn-follow rounded-pill <%= "active" if current_user.followees.exists?(@uid) %>" data-bs-toggle="button" data="<%= @user.id %>" onclick="handleFollow(event)"></button>
+      <% end %>
+      <h1 class="h1-responsive d-none d-md-block"><%= @user.full_name %></h1>
+      <h4 class="h4-responsive d-md-none"><%= @user.full_name %></h4>
+      <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          <button class="nav-link active" id="nav-photo-tab" data-bs-toggle="tab" href="/photo" data-bs-target="#nav-photo" type="button" role="tab" aria-controls="nav-photo" aria-selected="true"><span><%= @no_photos %></span> PHOTOS</button>
+          <button class="nav-link" id="nav-album-tab" data-bs-toggle="tab" href="/album" data-bs-target="#nav-album" type="button" role="tab" aria-controls="nav-album" aria-selected="false"><span><%= @no_albums %></span> ALBUMS</button>
+          <button class="nav-link" id="nav-following-tab" data-bs-toggle="tab" href="/followee" data-bs-target="#nav-following" type="button" role="tab" aria-controls="nav-following" aria-selected="false"><span><%= @no_followees %></span> FOLLOWINGS</button>
+          <button class="nav-link" id="nav-follower-tab" data-bs-toggle="tab" href="/follower" data-bs-target="#nav-follower" type="button" role="tab" aria-controls="nav-follower" aria-selected="false"><span><%= @no_followers %></span> FOLLOWERS</button>
+        </div>
+      </nav>
+    </div>
+  </div>
+  <div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-photo" role="tabpanel" aria-labelledby="nav-photo-tab" tabindex="0">
+      <% if @self %>
+        <div class="text-end mb-3" style="margin-top: -5%">
+          <a href="/posts/new" class="btn btn-success rounded-pill">Add Photo</a>
+        </div>
+      <% end %>
+      <div class="row">
+        <% if @resource == "photo" %>
+          <%= render 'card_post', posts: @posts, is_album: false, is_self: @self %>
+        <% end %>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="nav-album" role="tabpanel" aria-labelledby="nav-album-tab" tabindex="0">
+      <% if @self %>
+        <div class="text-end mb-3" style="margin-top: -5%">
+          <a href="/posts/new?is_album=1" class="btn btn-success rounded-pill">Add Album</a>
+        </div>
+      <% end %>
+      <div class="row">
+        <% if @resource == "album" %>
+          <%= render 'card_post', posts: @posts, is_album: true, is_self: @self %>
+        <% end %>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="nav-following" role="tabpanel" aria-labelledby="nav-following-tab" tabindex="0">
+      <div class="row">
+        <% if @resource == "followee" %>
+          <%= render 'card_user', users: @users %>
+        <% end %>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="nav-follower" role="tabpanel" aria-labelledby="nav-follower-tab" tabindex="0">
+      <div class="row">
+        <% if @resource == "follower" %>
+          <%= render 'card_user', users: @users %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<% content_for :js do %>
+  <script>
+    $(document).ready(function() {
+      let url = location.href.replace(/\/$/, "");
+
+      // Remove hash part (if any)
+      let hashIndex = url.indexOf('#');
+      if (hashIndex !== -1) {
+        url = url.substring(0, hashIndex);
+      }
+
+      // Remove query parameter part (if any)
+      let queryIndex = url.indexOf('?');
+      if (queryIndex !== -1) {
+        url = url.substring(0, queryIndex);
+      }
+
+      let resource = url.split('/').pop();
+      let tabSelector = document.querySelector('#nav-tab button[href="/' + resource + '"]');
+      if (tabSelector) {
+        url = url.slice(0, url.lastIndexOf('/'));
+      } else {
+        tabSelector = document.querySelector('#nav-tab :first-child');
+      }
+      tabSelector.click();
+
+      let tabLinks = document.querySelectorAll('#nav-tab button[data-bs-toggle="tab"]');
+      tabLinks.forEach(function(tabLink) {
+        tabLink.addEventListener('click', function() {
+          let newUrl;
+          let newResource = this.getAttribute('href');
+          
+          if (newResource == tabSelector.getAttribute('href')) {
+            return;
+          }
+          newUrl = url + newResource + '/';
+
+          location.href = newUrl;
+        });
+      });
+    });
+  </script>
+  <%= javascript_include_tag "debounce" %>
+<% end %>

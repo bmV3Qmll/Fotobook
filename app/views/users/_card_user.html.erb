@@ -1,0 +1,48 @@
+<% content_for :css do %>
+  <style type="text/css">
+    main > :not(div:first-child) .list-group-item {
+      border: none;
+      font-size: 8px;
+      & span {
+        font-size: 16px;
+      }
+    }
+    main > :not(div:first-child) .btn-follow {
+      font-size: 10px;
+      width: 60%;
+    }
+    @media (max-width: 576px) {
+      main > div:first-child .list-group {
+        flex-direction: column;
+        & .list-group-item:not(:last-child):after {
+          content: none;
+        }
+      }
+    }
+  </style>
+<% end %>
+
+<% users.each do |user| %>
+  <div class="col-6 col-sm-4 col-md-3 mb-3">
+    <div class="card">
+      <div class="row g-0 px-4 py-2 text-center">
+        <a class="text-decoration-none" href="/users/<%= user.id %>">
+          <% if user.avatar? %>
+          <%= image_tag user.avatar.thumb.url, class: "card-img img-fluid border rounded-circle" %>
+          <% else %>
+            <%= lavatar_tag(user.short_name, 200, class: "card-img img-fluid border rounded-circle") %>
+          <% end %>
+          <h5 class="card-title mb-0 text-muted"><%= user.full_name %></h5>
+        </a>
+        <ul class="list-group list-group-horizontal justify-content-evenly">
+          <li class="list-group-item"><span><%= user.posts.photos.count %></span><br> PHOTOS</li>
+          <li class="list-group-item"><span><%= user.posts.albums.count %></span><br> ALBUMS</li>
+        </ul>
+        <div class="text-center">
+          <button type="button" class="btn btn-follow rounded-pill <%= "active" if current_user.followees.exists?(user.id) %>" data-bs-toggle="button" data="<%= user.id %>" onclick="handleFollow(event)" <%= "disabled" if not @self %>></button>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+<%= will_paginate users, class: "d-flex justify-content-center digg_pagination" %>
