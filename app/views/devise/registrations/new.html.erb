@@ -1,0 +1,78 @@
+<% content_for :css do %>
+  <%= stylesheet_link_tag "auth" %>
+<% end %>
+
+<main class="container mt-5">
+  <div class="row mb-3">
+    <h1 class="text-center">Fotobook Signup</h1>
+  </div>
+  <div class="row justify-content-center mb-3">
+    <div class="col-sm-9 col-md-6 col-xl-3 row border rounded">
+      <a href="#" class="col btn btn-block">
+        <%= image_tag "icon/google.png", alt: "Google" %>
+      </a>
+      <a href="#" class="col btn btn-block">
+        <%= image_tag "icon/facebook.png", alt: "Facebook" %>
+      </a>
+      <a href="#" class="col btn btn-block">
+        <%= image_tag "icon/twitter.png", alt: "Twitter" %>
+      </a>
+    </div>
+  </div>
+  
+  <div class="row justify-content-center">
+    <div class="col-sm-8 col-md-6 col-xl-4">
+      <div class="card">
+        <div class="card-body">
+          <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+            <div class="field mb-2">
+              <%= f.label :email, "Email", class: "form-label mb-0" %><br />
+              <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", id: "email", placeholder: "Email" %>
+              <% resource.errors.full_messages_for(:email).each do |message| %>
+                <div class="text-end"><%= message %></div>
+              <% end %>
+            </div>
+            <div class="field mb-2">
+              <%= f.label :first_name, "First Name", class: "form-label mb-0" %><br />
+              <%= f.text_field :first_name, class: "form-control", id: "firstname", placeholder: "First Name" %>
+              <% resource.errors.full_messages_for(:first_name).each do |message| %>
+                <div class="text-end"><%= message %></div>
+              <% end %>
+            </div>
+            <div class="field mb-2">
+              <%= f.label :last_name, "Last Name", class: "form-label mb-0" %><br />
+              <%= f.text_field :last_name, class: "form-control", id: "lastname", placeholder: "Last Name" %>
+              <% resource.errors.full_messages_for(:last_name).each do |message| %>
+                <div class="text-end"><%= message %></div>
+              <% end %>
+            </div>
+            <div class="field mb-2">
+              <%= f.label :password, "New Password", class: "form-label mb-0" %>
+              <% if @minimum_password_length %>
+              <em>(<%= @minimum_password_length %> characters minimum)</em>
+              <% end %><br />
+              <%= f.password_field :password, autocomplete: "new-password", class: "form-control", id: "password", placeholder: "Password"%>
+              <% resource.errors.full_messages_for(:password).each do |message| %>
+                <div class="text-end"><%= message %></div>
+              <% end %>
+            </div>
+            <div class="field mb-2">
+              <%= f.label :password_confirmation, "Password Confirmation", class: "form-label mb-0" %><br />
+              <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control", id: "password", placeholder: "Password"%>
+              <% resource.errors.full_messages_for(:password_confirmation).each do |message| %>
+                <div class="text-end"><%= message %></div>
+              <% end %>
+            </div>
+            <div class="actions text-center">
+              <%= f.submit "Sign up", class: "btn btn-primary" %>
+            </div>
+          <% end %>
+          
+        </div>
+        <div class="card-footer text-center">
+          Already have an account? <%= link_to "Log in", new_session_path(:user) %>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

@@ -264,7 +264,7 @@ DEPENDENCIES
   debug
   devise (~> 4.9.4)
   error_highlight (>= 0.4.0)
-  file_validators
+  file_validators (~> 3.0.0)
   importmap-rails
   jbuilder
   puma (>= 5.0)
