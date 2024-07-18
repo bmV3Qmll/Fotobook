@@ -20,4 +20,17 @@ class User < ApplicationRecord
   validates_uniqueness_of :email
   validates_length_of :email, :maximum => 255
   validates :avatar, file_size: { less_than_or_equal_to: 2.megabytes }, file_content_type: { allow: ['image/jpeg', 'image/png'] }
+
+  before_create do
+    self.first_name = self.first_name.capitalize
+    self.last_name = self.last_name.capitalize
+  end
+
+  def full_name
+    first_name + " " + last_name
+  end
+
+  def short_name
+    first_name[0] + last_name[0]
+  end
 end

@@ -1,0 +1,51 @@
+<% content_for :css do %>
+  <%= stylesheet_link_tag "auth" %>
+<% end %>
+
+<main class="container mt-5">
+  <div class="row mb-3">
+    <h1 class="text-center">Fotobook Login</h1>
+  </div>
+  <div class="row justify-content-center mb-3">
+    <div class="col-sm-9 col-md-6 col-lg-4 col-xl-3 row border rounded">
+      <a href="#" class="col btn btn-block">
+        <%= image_tag "icon/google.png", alt: "Google" %>
+      </a>
+      <a href="#" class="col btn btn-block">
+        <%= image_tag "icon/facebook.png", alt: "Facebook" %>
+      </a>
+      <a href="#" class="col btn btn-block">
+        <%= image_tag "icon/twitter.png", alt: "Twitter" %>
+      </a>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-sm-8 col-md-6 col-lg-4">
+      <div class="card">
+        <div class="row justify-content-center mt-4 mb-0">
+          <%= image_tag "icon/avatar.png", alt: "Avatar", class: "col-3" %>
+        </div>
+        <div class="card-body">
+          <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+            <div class="field mb-2">
+              <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", id: "email", placeholder: "Email" %>
+            </div>
+            <div class="field mb-2">
+              <%= f.password_field :password, autocomplete: "new-password", class: "form-control", id: "password", placeholder: "Password"%>
+            </div>
+            <%= content_tag(:div, flash[:alert], :id => "flash_alert", class: "text-center mb-3") if flash[:alert] %>
+            <div class="actions text-center mb-3">
+              <%= f.submit "Login", class: "btn btn-primary" %>
+            </div>
+            <div class="text-center">
+              <%= link_to "Forgot your password?", new_password_path(resource_name) %><br />
+            </div>
+          <% end %>
+        </div>
+      </div>
+      <div class="text-center mt-3">
+        <%= link_to "Create an account", new_registration_path(resource_name) %><br />
+      </div>
+    </div>
+  </div>
+</main>

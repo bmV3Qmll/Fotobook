@@ -1,0 +1,20 @@
+main > div:first-child {
+  color: darkblue;
+}
+
+.card {
+  background-color: #efefef;
+}
+
+form label {
+  font-weight: bold;
+}
+
+main a {
+  color: #0a58ca;
+  text-decoration: none;
+}
+
+body {
+  background-color: white;
+}

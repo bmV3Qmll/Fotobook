@@ -1,0 +1,69 @@
+<% guest = !user_signed_in? %>
+<% ihome = !(guest or defined?(home).nil?) %>
+<% other = !(ihome or guest) %>
+
+<% content_for :css do %>
+  <style type="text/css">
+    #sidebar button {
+      background-color: transparent;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      color: #6c757d;
+      &.active {
+        color: #0d6efd;
+      }
+      &:hover {
+        background-color: #b9b9b9;
+      }
+    }
+
+    .btn-theme {
+      color: #fff;
+      background-color: #0a58ca;
+      &.active {
+        color: #0a58ca;
+        background-color: #fff;
+      }
+    }
+  </style>
+<% end %>
+
+<div class="container-fluid row m-0">
+  <div id="sidebar" class="col-lg-2 mt-3">
+    <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+      <button class="nav-link text-start <%= "active" if ihome %> <%= "d-none d-lg-block" if other %>" id="v-pills-feeds-tab" data-bs-toggle="pill" data-bs-target="#v-pills-feeds" type="button" role="tab" aria-controls="v-pills-feeds" aria-selected=" <%= ihome.to_s %> " <%= "disabled" if not ihome %> >Feeds</button>
+      <button class="nav-link text-start <%= "active" if guest %> <%= "d-none d-lg-block" if other %>" id="v-pills-discover-tab" data-bs-toggle="pill" data-bs-target="#v-pills-discover" type="button" role="tab" aria-controls="v-pills-discover" aria-selected=" <%= guest.to_s %> " <%= "disabled" if other %> >Discover</button>
+    </div>
+  </div>
+  <main class="col-lg-8 mt-3 bg-light p-4">
+    <% if other %>
+      <%= yield %>
+    <% else %>
+      <div class="tab-content" id="v-pills-tabContent">
+        <div class="tab-pane fade <%= "show active" if ihome %> " id="v-pills-feeds" role="tabpanel" aria-labelledby="v-pills-feeds-tab" tabindex="0">
+          <div class="row justify-content-center my-3">
+            <div class="col-7 col-md-4 row">
+              <button type="button" id="feeds-photo" class="btn btn-theme col-6 active">PHOTO</button>
+              <button type="button" id="feeds-album" class="btn btn-theme col-6">ALBUM</button>
+            </div>
+          </div>
+          <div id="feeds-container" class="row">
+
+          </div>
+        </div>
+        <div class="tab-pane fade <%= "show active" if guest %> " id="v-pills-discover" role="tabpanel" aria-labelledby="v-pills-discover-tab" tabindex="0">
+          <div class="row justify-content-center my-3">
+            <div class="col-7 col-md-4 row">
+              <button type="button" id="discover-photo" class="btn btn-theme col-6 active">PHOTO</button>
+              <button type="button" id="discover-album" class="btn btn-theme col-6">ALBUM</button>
+            </div>
+          </div>
+          <div id="discover-container" class="row">
+
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </main>
+</div>
