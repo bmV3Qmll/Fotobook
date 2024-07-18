@@ -1,0 +1,102 @@
+<% content_for :css do %>
+  <%= stylesheet_link_tag "users" %>
+<% end %>
+
+<% entity = is_album ? "Album" : "Photo" %>
+
+<legend>
+  <div class="row justify-content-between mb-3">
+    <div class="col-8">
+      <% if new_post %>
+        <%= "New #{entity}" %>
+      <% else %>
+        <%= "Edit #{entity}" %>
+      <% end %>
+    </div>
+    <div class="col-4 text-end">
+      <%= link_to "Back", :back, class: "btn btn-primary" %>
+    </div>
+  </div>
+</legend>
+
+<%= form_with model: post do |f| %>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="mb-2">
+        <%= f.label :title, "Title", class: "form-label mb-0" %><br />
+        <%= f.text_field :title, class: "form-control", id: "title", placeholder: "#{entity} Title" %>
+        <% post.errors.full_messages_for(:title).each do |message| %>
+          <div class="text-end"><%= message %></div>
+        <% end %>
+      </div>
+      <div class="mb-2">
+        <%= f.label :mode, "Sharing Mode", class: "form-label mb-0" %><br />
+        <%= f.select :mode, {"Public" => true, "Private" => false}, class: "form-select", id: "mode" %>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <%= f.label :description, "Description", class: "form-label mb-0" %><br />
+      <div class="form-floating">
+        <%= f.text_area :description, class: "form-control", id: "description", placeholder: "Leave a comment here", style: "height: 100px" %>
+        <label for="description"><%= entity %> Description</label>
+      </div>
+      <% post.errors.full_messages_for(:description).each do |message| %>
+        <div class="text-end"><%= message %></div>
+      <% end %>
+    </div>
+  </div>
+  <% if is_album %>
+    <div class="row gy-3 drop-area">
+      <%= f.fields_for :album_images do |image| %>
+        <%= render 'album_image_fields', f: image %>
+      <% end %>
+      <div class="links d-none">
+        <%= link_to_add_association '', f, :album_images %>
+      </div>
+      <div class="col col-md-3">
+        <label for="decoy">
+          <input type="file" id="decoy" name="decoy" accept=".png,.jpeg,.jpg,.gif" class="img-upload" hidden multiple />
+          <div class="img-view">
+            <%= image_tag("icon/add.png") %>
+          </div>
+        </label>
+      </div>
+    </div>
+  <% else %>
+    <label for="post_image" class="drop-area">
+      <%= f.file_field :image, accept: ".png,.jpeg,.jpg,.gif", class: "img-upload", hidden: true %>
+      <%= f.hidden_field :image_cache %>
+      <div class="img-view">
+        <% if new_post %>
+          <%= image_tag("icon/add.png") %>
+        <% else %>
+          <%= image_tag post.image.thumb.url %>
+        <% end %>
+      </div>
+    </label>
+  <% end %>
+  <% post.errors.full_messages_for(:image).each do |message| %>
+    <div><%= message %></div>
+  <% end %>
+  <div class="row">
+    <div class="col-md-4">
+      
+      <div class="row justify-content-between ms-0 mt-3">
+        <%= f.submit "Save", class: "btn btn-success col-3" %>
+
+        <% if not new_post %>
+          <%= link_to post_path(post), method: :delete, class:"btn btn-danger col-4 col-sm-3 col-md-5", data: {
+            turbo_method: :delete,
+            turbo_confirm: "Are you sure?"
+          } do %>
+            <i class="fa fa-trash-o" aria-hidden="true">  Delete</i>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<% content_for :js do %>
+  <%= javascript_include_tag "image" %>
+<% end %>

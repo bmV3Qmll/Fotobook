@@ -2,9 +2,14 @@ class Post < ApplicationRecord
   belongs_to :user
 
   has_many :album_images
+  accepts_nested_attributes_for :album_images, \
+    reject_if: proc{ |param| param[:image].blank? && param[:image_cache].blank? && param[:id].blank? }, \
+    allow_destroy: true
 
   has_many :reactions
   has_many :likes, class_name: "User", through: :reactions, :source => :user
+
+  mount_uploader :image, ImageUploader
 
   validates :title, presence: true, length: { maximum: 140 }
   validates :description, presence: true, length: { maximum: 300 }

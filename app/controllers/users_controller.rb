@@ -18,13 +18,13 @@ class UsersController < ApplicationController
     posts = posts.view if not @self
     photos = posts.photos
     albums = posts.albums
-    @no_photos = photos.count
-    @no_albums = albums.count
+    @no_photos = photos.size
+    @no_albums = albums.size
 
     followees = @user.followees
     followers = @user.followers
-    @no_followees = followees.count
-    @no_followers = followers.count
+    @no_followees = followees.size
+    @no_followers = followers.size
 
     @resource = params[:resource].present? ? params[:resource] : 'photo'
 
