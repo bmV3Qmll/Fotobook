@@ -1,43 +1,110 @@
-<h2>Edit <%= resource_name.to_s.humanize %></h2>
+<% content_for :css do %>
+  <%= stylesheet_link_tag "users" %>
+<% end %>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+<%= render "shared/menu" do %>
+  <legend>Edit User Profile</legend>
+  <div class="container-fluid text-center">
+    <div class="row justify-content-center">
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+        <label for="user_avatar" class="drop-area position-relative">
+          <%= f.file_field :avatar, accept: ".png,.jpeg,.jpg,.gif", class: "img-upload", hidden: true %><br>
+          <%= f.hidden_field :avatar_cache %>
+          <div class="img-view">
+            <% if resource.avatar? %>
+              <%= image_tag resource.avatar.thumb.url class: "img-thumbnail mb-3" %>
+            <% else %>
+              <%= lavatar_tag(resource.short_name, 200) %>
+            <% end %>
+          </div>
+          <div class="btn-change">Change</div>
+        </label>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
+        <h5 class="mt-4">Basic Information</h5>
+        <div class="row g-3 justify-content-center align-items-center mt-0">
+          <div class="col-4 col-md-2 text-end">
+            <%= f.label :first_name, "First Name", class: "form-label mb-0" %>
+          </div>
+          <div class="col-8 col-sm-6 col-md-4">
+            <%= f.text_field :first_name, class: "form-control", id: "firstname" %>
+          </div>
+        </div>
+        <% resource.errors.full_messages_for(:first_name).each do |message| %>
+          <div><%= message %></div>
+        <% end %>
 
-  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-    <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
-  <% end %>
+        <div class="row g-3 justify-content-center align-items-center mt-0">
+          <div class="col-4 col-md-2 text-end">
+            <%= f.label :last_name, "Last Name", class: "form-label mb-0" %>
+          </div>
+          <div class="col-8 col-sm-6 col-md-4">
+            <%= f.text_field :last_name, class: "form-control", id: "lastname" %>
+          </div>
+        </div>
+        <% resource.errors.full_messages_for(:last_name).each do |message| %>
+          <div><%= message %></div>
+        <% end %>
 
-  <div class="field">
-    <%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-    <% if @minimum_password_length %>
-      <br />
-      <em><%= @minimum_password_length %> characters minimum</em>
-    <% end %>
-  </div>
+        <div class="row g-3 justify-content-center align-items-center mt-0">
+          <div class="col-4 col-md-2 text-end">
+            <%= f.label :email, "Email", class: "form-label mb-0" %>
+          </div>
+          <div class="col-8 col-sm-6 col-md-4">
+            <%= f.email_field :email, autocomplete: "email", class: "form-control", id: "email" %>
+          </div>
+          <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+            <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+          <% end %>
+        </div>
+        <% resource.errors.full_messages_for(:email).each do |message| %>
+          <div><%= message %></div>
+        <% end %>
 
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
+        <h5 class="mt-4">Password</h5>
+        <div class="row g-3 justify-content-center align-items-center mt-0">
+          <div class="col-4 col-md-2 text-end">
+            <%= f.label :current_password, "Current Password", class: "form-label mb-0" %>
+          </div>
+          <div class="col-8 col-sm-6 col-md-4">
+            <%= f.password_field :current_password, autocomplete: "current-password", class: "form-control", id: "current_password", placeholder: "********"%>
+          </div>
+        </div>
+        <i>(we need your current password to confirm your changes)</i><br />
+        <% resource.errors.full_messages_for(:current_password).each do |message| %>
+          <div><%= message %></div>
+        <% end %>
 
-  <div class="field">
-    <%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
-    <%= f.password_field :current_password, autocomplete: "current-password" %>
-  </div>
+        <div class="row g-3 justify-content-center align-items-center mt-0">
+          <div class="col-4 col-md-2 text-end">
+            <%= f.label :password, "New Password", class: "form-label mb-0" %>
+          </div>
+          <div class="col-8 col-sm-6 col-md-4">
+            <%= f.password_field :password, autocomplete: "new-password", class: "form-control", id: "new_password", placeholder: "********"%>
+          </div>
+        </div>
+        <i>(leave blank if you don't want to change it)</i><br />
+        <% resource.errors.full_messages_for(:password).each do |message| %>
+          <div><%= message %></div>
+        <% end %>
 
-  <div class="actions">
-    <%= f.submit "Update" %>
+        <div class="row g-3 justify-content-center align-items-center mt-0">
+          <div class="col-4 col-md-2 text-end">
+            <%= f.label :password_confirmation, "Password Confirmation", class: "form-label mb-0" %>
+          </div>
+          <div class="col-8 col-sm-6 col-md-4">
+            <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control", id: "new_password", placeholder: "********"%>
+          </div>
+        </div>
+        <% resource.errors.full_messages_for(:password_confirmation).each do |message| %>
+          <div><%= message %></div>
+        <% end %>
+
+        <%= f.submit "Save", class: "btn btn-success col-1 mt-3" %>
+      <% end %>
+    </div>
   </div>
 <% end %>
 
-<h3>Cancel my account</h3>
-
-<div>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete %></div>
-
-<%= link_to "Back", :back %>
+<% content_for :js do %>
+  <%= javascript_include_tag "image" %>
+<% end %>

@@ -15,6 +15,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :trackable
 
+  mount_uploader :avatar, AvatarUploader
+
   validates_presence_of :first_name, :last_name
   validates_length_of :first_name, :last_name, :maximum => 25
   validates_uniqueness_of :email

@@ -70,3 +70,5 @@ end
 
 gem "devise", "~> 4.9.4"
 gem "file_validators", "~> 3.0.0"
+gem "carrierwave", "~> 3.0"
+gem "lavatar", "~> 0.1.5"

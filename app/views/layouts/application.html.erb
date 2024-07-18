@@ -47,6 +47,11 @@
                   <div class="row">
                     <div class="col-8">
                       <a class="nav-link" href="/users">
+                        <% if current_user.avatar? %>
+                          <%= image_tag current_user.avatar.small_thumb.url %>
+                        <% else %>
+                          <%= lavatar_tag(current_user.short_name, 28) %>
+                        <% end %>
                         <span><%= current_user.full_name %></span>
                       </a>
                     </div>
@@ -68,8 +73,6 @@
     <p class="notice d-none"><%= notice %></p>
     <p class="alert d-none"><%= alert %></p>
     <%= yield %>
-    <script type="text/javascript">
-      <%= yield :js %>
-    </script>
+    <%= yield :js %>
   </body>
 </html>
