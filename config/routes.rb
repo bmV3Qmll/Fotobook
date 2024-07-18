@@ -4,6 +4,8 @@ Rails.application.routes.draw do
 
   devise_for :users
   get '/users(/:id)(/:resource)', to: 'users#show', constraints: { id: /\d+/ }, as: :users
+  post '/follow', to: 'users#follow', as: 'follow'
+  post '/like', to: 'users#like', as: 'like'
 
   resources :posts, except: [:index, :show]
   

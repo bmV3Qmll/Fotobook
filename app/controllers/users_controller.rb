@@ -14,6 +14,10 @@ class UsersController < ApplicationController
       @self = true
     end
 
+    if not @self
+      @is_followed = current_user.followees.include?(@user)
+    end
+
     posts = @user.posts
     posts = posts.view if not @self
     photos = posts.photos
@@ -41,5 +45,48 @@ class UsersController < ApplicationController
       render plain: 'Bad Request', status: :bad_request
       return
     end
+  end
+
+  def follow
+    tid = params[:tid]
+    target = User.find_by(id: tid)
+    if target.nil? or target == current_user
+      return
+    end
+
+    following = current_user.followees.exists?(tid)
+    state = ActiveModel::Type::Boolean.new.cast(params[:state])
+    if following == state
+      return
+    end
+
+    if state # follow
+      current_user.followees << target
+    else     # unfollow
+      current_user.followees.delete(target)
+    end
+  end
+
+  def like
+    pid = params[:pid]
+    target = Post.view.find_by(id: pid)
+    if target.nil?
+      render plain: '0'
+      return
+    end
+
+    like = current_user.likes.exists?(pid)
+    state = ActiveModel::Type::Boolean.new.cast(params[:state])
+    if like == state
+      render plain: '0'
+      return
+    end
+
+    if state # like
+      current_user.likes << target
+    else     # unlike
+      current_user.likes.delete(target)
+    end
+    render plain: '1'
   end
 end
