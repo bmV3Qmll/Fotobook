@@ -69,3 +69,4 @@ group :test do
 end
 
 gem "devise", "~> 4.9.4"
+gem "file_validators", "~> 3.0.0"
