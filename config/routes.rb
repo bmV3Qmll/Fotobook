@@ -6,6 +6,9 @@ Rails.application.routes.draw do
   get '/users(/:id)(/:resource)', to: 'users#show', constraints: { id: /\d+/ }, as: :users
   post '/follow', to: 'users#follow', as: 'follow'
   post '/like', to: 'users#like', as: 'like'
+  get '/admin(/:resource)', to: 'users#manage', as: :admin
+  get '/admin/edit/:id', to: 'users#edit', as: :edit_user
+  resources :users, only: [:update, :destroy]
 
   resources :posts, except: [:index, :show]
   post 'fetch', to: 'posts#fetch', as: 'fetch'

@@ -1,0 +1,33 @@
+<style>
+  .card .position-absolute {
+    background-color: black;
+    opacity: 50%;
+    color: white;
+  }
+</style>
+
+<% posts.each do |post| %>
+  <div class="col-6 col-sm-4 col-md-3 mb-3">
+    <div class="card">
+      <div class="position-relative">
+        <% if is_album %>
+          <%= render 'posts/special_image', image: post.album_images.first.image.thumb.url %>
+        <% else %>
+          <%= image_tag post.image.thumb.url, class: "card-img rounded" %>
+        <% end %>
+        <div class="row position-absolute top-0 start-0 end-0 m-0">
+          <div class="col-10 text-start text-truncate">
+            <%= post.title %>
+          </div>
+          <div class="col-2 text-end">
+            <%= link_to edit_post_path(post), class: "btn p-0" do %>
+              <i class="fa fa-pencil-square-o" aria-hidden="true" style="color: white"></i>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+<% end %>
+<%= will_paginate posts, class: "d-flex justify-content-center digg_pagination" %>

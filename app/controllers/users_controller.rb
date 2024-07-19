@@ -1,5 +1,7 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
+  before_action :verify_admin, only: [:manage, :edit, :update, :destroy]
+  before_action :find_user, only: [:edit, :update, :destroy]
 
   def show
     if params[:id].present?
@@ -89,4 +91,65 @@ class UsersController < ApplicationController
     end
     render plain: '1'
   end
+
+  def manage
+    @resource = params[:resource].present? ? params[:resource] : 'photo'
+
+    case @resource
+    when 'photo'
+      @posts = Post.photos.paginate(page: params[:page], per_page: 40)
+    when 'album'
+      @posts = Post.albums.paginate(page: params[:page], per_page: 40)
+    when 'user'
+      @users = User.order(updated_at: :desc).paginate(page: params[:page], per_page: 40)
+    else
+      render plain: 'Bad Request', status: :bad_request
+      return
+    end
+
+    render :admin
+  end
+
+  def edit
+    @resource = "edit"
+    render :admin
+  end
+
+  def update
+    @resource = "edit"
+    if params[:user][:password].present?
+      if @user.update(user_params)
+        redirect_to '/admin/user'
+      else
+        render :admin, status: :unprocessable_entity
+      end
+    else
+      if @user.update_without_password(user_params.except(:password))
+        redirect_to '/admin/user'
+      else
+        render :admin, status: :unprocessable_entity
+      end
+    end
+  end
+
+  def destroy
+    @user.destroy
+    redirect_to '/admin/user'
+  end
+
+  private
+    def user_params
+      params.require(:user).permit(:first_name, :last_name, :email, :password, :avatar, :avatar_cache, :is_active)
+    end
+
+    def verify_admin
+      if not current_user.is_admin
+        render plain: 'Unauthorized Access', status: 401
+        return
+      end
+    end
+
+    def find_user
+      @user = User.find(params[:id])
+    end
 end
