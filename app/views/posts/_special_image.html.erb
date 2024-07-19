@@ -1,0 +1,8 @@
+<!-- First layer -->
+<%= image_tag image, class: "image-layer", style: "transform: rotate(10deg);" %>
+<!-- Second layer -->
+<%= image_tag image, class: "image-layer", style: "transform: rotate(5deg);" %>
+<!-- Third layer -->
+<%= image_tag image, class: "image-layer" %>
+<!-- Hidden layer to avoid collapsing with zero height -->
+<%= image_tag image, style: "visibility: hidden;" %>

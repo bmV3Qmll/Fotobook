@@ -1,0 +1,16 @@
+<div class="nested-fields col col-md-3">
+  <%= f.label :image do %>
+    <%= f.file_field :image, accept: ".png,.jpeg,.jpg,.gif", class: "album-images-input", hidden: true %>
+    <%= f.hidden_field :image_cache, value: f.object.image_cache %>
+    <div class="img-view position-relative">
+      <% if f.object.image.url.present? %>
+        <%= image_tag f.object.image.url %>
+      <% else %>
+        <img>
+      <% end %>
+      <%= link_to_remove_association f, class: "position-absolute btn btn-remove" do %>
+        <strong>x</strong>
+      <% end %>
+    </div>
+  <% end %>
+</div>

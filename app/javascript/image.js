@@ -18,8 +18,6 @@ function uploadImage(e) {
   if (!validateFileSize(image)) {
     return;
   }
-  console.log(fileInput);
-  console.log(fileView);
   replaceImage(fileView, image)
 }
 
@@ -35,24 +33,6 @@ function uploadImages() {
   }
 
   imgUpload.files = new DataTransfer().files;
-
-  // let newDiv = document.createElement('div');
-    // newDiv.className = "col col-md-3 position-relative";
-    
-    // let newImg = document.createElement('img');
-    // newImg.src = URL.createObjectURL(file);
-
-    // let newBtn = document.createElement('button');
-    // newBtn.className = "position-absolute btn btn-remove";
-    // newBtn.innerHTML = "<strong>x</strong>";
-    // newBtn.addEventListener("click", function() {
-    //   newBtn.parentNode.remove();
-    // });
-
-    // newDiv.appendChild(newImg);
-    // newDiv.appendChild(newBtn);
-    
-    // imgHolder.insertBefore(newDiv, imgHolder.lastElementChild);
 }
 
 function validateFileSize(file) {
