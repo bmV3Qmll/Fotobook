@@ -2,6 +2,7 @@ class PostsController < ApplicationController
   PAGELIMIT = 6
   before_action :authenticate_user!, except: :fetch
   before_action :verify_permission, only: [:edit, :update, :destroy]
+  before_action :remember_url, only: [:new, :edit]
 
   def new
     @post = Post.new
@@ -13,11 +14,7 @@ class PostsController < ApplicationController
     params[:post][:is_album] = @is_album
     @post = current_user.posts.create(post_params)
     if @post.valid?
-      if @is_album
-        redirect_to '/users/album'
-      else
-        redirect_to '/users'
-      end
+      redirect_to session.delete(:return_to)
     else
       render :new, status: :unprocessable_entity
     end
@@ -30,11 +27,7 @@ class PostsController < ApplicationController
   def update
     @is_album = @post.is_album
     if @post.update(post_params)
-      if @is_album
-        redirect_to '/users/album'
-      else
-        redirect_to '/users'
-      end
+      redirect_to session.delete(:return_to)
     else
       render :edit, status: :unprocessable_entity
     end
@@ -84,5 +77,9 @@ class PostsController < ApplicationController
         render plain: 'Unauthorized Access', status: 401
         return
       end
+    end
+
+    def remember_url
+      session[:return_to] ||= request.referer
     end
 end

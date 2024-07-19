@@ -8,15 +8,19 @@
   </div>
   <div class="row justify-content-center mb-3">
     <div class="col-sm-9 col-md-6 col-lg-4 col-xl-3 row border rounded">
-      <a href="#" class="col btn btn-block">
-        <%= image_tag "icon/google.png", alt: "Google" %>
-      </a>
+      <div class="col btn btn-block">
+        <%= button_to omniauth_authorize_path(:user, :google_oauth2), data: { turbo: false }, class: "invisible" do %>
+          <%= image_tag "icon/google.png", alt: "Google", class: "visible" %>
+        <% end %>
+      </div>
       <a href="#" class="col btn btn-block">
         <%= image_tag "icon/facebook.png", alt: "Facebook" %>
       </a>
-      <a href="#" class="col btn btn-block">
-        <%= image_tag "icon/twitter.png", alt: "Twitter" %>
-      </a>
+      <div class="col btn btn-block">
+        <%= button_to omniauth_authorize_path(:user, :twitter), data: { turbo: false }, class: "invisible" do %>
+          <%= image_tag "icon/twitter.png", alt: "Twitter", class: "visible" %>
+        <% end %>
+      </div>
     </div>
   </div>
   <div class="row justify-content-center">

@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "application#index"
 
-  devise_for :users
+  devise_for :users, controllers: { omniauth_callbacks: 'omniauth_callbacks' }
   get '/users(/:id)(/:resource)', to: 'users#show', constraints: { id: /\d+/ }, as: :users
   post '/follow', to: 'users#follow', as: 'follow'
   post '/like', to: 'users#like', as: 'like'
