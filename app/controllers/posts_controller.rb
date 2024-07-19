@@ -1,5 +1,6 @@
 class PostsController < ApplicationController
-  before_action :authenticate_user!
+  PAGELIMIT = 4
+  before_action :authenticate_user!, except: :fetch
   before_action :verify_permission, only: [:edit, :update, :destroy]
 
   def new
@@ -42,6 +43,34 @@ class PostsController < ApplicationController
   def destroy
     @post.destroy
     redirect_to users_path
+  end
+
+  def fetch
+    @feeds = ActiveModel::Type::Boolean.new.cast(params[:feeds])
+    resource = params[:resource]
+    @offset = params[:offset].to_i
+    @new_tab = @offset == 0
+
+    if resource == 'photo'
+      @posts = Post.view.photos
+    elsif resource == 'album'
+      @posts = Post.view.albums
+    else
+      @posts = Post.none
+    end
+
+    cuid = user_signed_in? ? current_user.id : 0
+    @posts = @posts.where(user: current_user.followee_ids) if @feeds
+    @posts = @posts.includes(:user)
+      .left_outer_joins(:likes)
+      .select('posts.*, COUNT(reactions.*) AS likes_count, MAX(CASE WHEN reactions.user_id = ' + cuid.to_s + ' THEN 1 ELSE 0 END) AS user_likes')
+      .group('posts.id')
+
+    @posts = @posts.limit(PAGELIMIT).offset(@offset)
+
+    respond_to do |format|
+      format.js # responds with fetch.js.erb
+    end
   end
 
   private

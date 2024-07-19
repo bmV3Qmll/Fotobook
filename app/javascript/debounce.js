@@ -32,7 +32,6 @@ var toggleFollow = (e) => {
       state: isActive
     })
   })
-  .then(console.log(`${tid}: ${isActive}`))
   .catch(error => console.error('Error:', error));
 };
 
@@ -55,7 +54,6 @@ var toggleLike = (e) => {
   })
   .then(response => response.text())
   .then(data => {
-    console.log(`${pid}: ${isActive}`);
     if (data == '1') {
       const icon = btn.firstElementChild;
       let curr = parseInt(icon.textContent, 10);

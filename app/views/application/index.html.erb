@@ -1,4 +1,183 @@
+<% content_for :css do %>
+  <style>
+    .card .btn-follow {
+      font-size: 8px;
+      padding: 4px 0;
+      width: 48px;
+    }
+
+    .public-date {
+      margin: 0;
+      opacity: 50%;
+    }
+
+    .card .col-md-6:first-child img:not(.image-layer) {
+      width: 100%;
+    /*  height: 100%;*/
+    }
+
+    .modal-header {
+      border-bottom: none;
+      & button {
+        background-color: inherit;
+        border: none;
+      }
+    }
+
+    .modal-body {
+      padding: 0;
+    }
+
+    .truncate {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .modal-header h3 {
+      max-width: 90%;
+    }
+
+    #loading {
+      margin-top: -40px;
+    }
+  </style>
+<% end %>
+
 <%= render "shared/menu", home: true %>
 <div class="row justify-content-center mt-2">
-  <div id="loading" class="spinner-border" data-offset="0" data-end="0"></div>
+  <div id="loading" class="spinner-border d-none" data-offset="0" data-end="0"></div>
 </div>
+
+<% content_for :js do %>
+  <%= javascript_include_tag "debounce" %>
+  <script>
+    function isActive(elem) {
+      return elem.classList.contains('active');
+    }
+
+    var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    function fetchData(feeds, resource, offset=0) {
+      fetch('<%= fetch_path %>', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken
+        },
+        body: JSON.stringify({
+          feeds: feeds,
+          resource: resource,
+          offset: offset
+        })
+      })
+      .then(response => response.text())
+      .then(data => eval(data)) // Evaluates the JavaScript response (fetch.js.erb)
+      .catch(error => console.error('Error:', error));
+    }
+    
+    $(document).ready(function() {
+      let feeds_tab = document.getElementById('v-pills-feeds-tab');
+      let feeds_photo = document.getElementById('feeds-photo');
+      let feeds_album = document.getElementById('feeds-album');
+
+      let discover_tab = document.getElementById('v-pills-discover-tab');
+      let discover_photo = document.getElementById('discover-photo');
+      let discover_album = document.getElementById('discover-album');
+
+      feeds_tab.addEventListener('click', function() {
+        if (isActive(feeds_photo)) {
+          fetchData(true, 'photo');
+        } else {
+          fetchData(true, 'album');
+        }
+      });
+
+      feeds_photo.addEventListener('click', function() {
+        if (!isActive(this)) {
+          fetchData(true, 'photo');
+          feeds_photo.classList.toggle('active');
+          feeds_album.classList.toggle('active');
+        }
+      });
+
+      feeds_album.addEventListener('click', function() {
+        if (!isActive(this)) {
+          fetchData(true, 'album');
+          feeds_photo.classList.toggle('active');
+          feeds_album.classList.toggle('active');
+        }
+      });
+
+      discover_tab.addEventListener('click', function() {
+        if (isActive(discover_photo)) {
+          fetchData(false, 'photo');
+        } else {
+          fetchData(false, 'album');
+        }
+      });
+
+      discover_photo.addEventListener('click', function() {
+        if (!isActive(this)) {
+          fetchData(false, 'photo');
+          discover_photo.classList.toggle('active');
+          discover_album.classList.toggle('active');
+        }
+      });
+
+      discover_album.addEventListener('click', function() {
+        if (!isActive(this)) {
+          fetchData(false, 'album');
+          discover_photo.classList.toggle('active');
+          discover_album.classList.toggle('active');
+        }
+      });
+
+      <% if user_signed_in? %>
+        fetchData(true, 'photo');
+      <% else %>
+        fetchData(false, 'photo');
+      <% end %>
+
+      function loadMorePosts() {
+        let loading = document.getElementById('loading');
+        loading.classList.remove('d-none');
+        setTimeout(() => {
+          loading.classList.add('d-none');
+        }, 400);
+
+        let end = loading.getAttribute('data-end');
+        if (end == "1") {
+          return;
+        }
+        let offset = loading.getAttribute('data-offset');
+
+        if (isActive(feeds_tab)) {
+          if (isActive(feeds_photo)) {
+            fetchData(true, 'photo', offset);
+          } else {
+            fetchData(true, 'album', offset);
+          }
+        } else {
+          if (isActive(discover_photo)) {
+            fetchData(false, 'photo', offset);
+          } else {
+            fetchData(false, 'album', offset);
+          }
+        }
+      }
+
+      function scrolledToBottom() {
+        let scrollPosition = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+        let windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+        let bodyHeight = document.body.scrollHeight || document.documentElement.scrollHeight;
+        if (bodyHeight - scrollPosition <= windowHeight + 100) {
+          loadMorePosts();
+        }
+      }
+
+      window.addEventListener('scroll', debounce(scrolledToBottom, 500));
+    });
+  </script>
+<% end %>

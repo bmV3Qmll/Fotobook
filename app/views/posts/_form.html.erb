@@ -67,10 +67,10 @@
       <%= f.file_field :image, accept: ".png,.jpeg,.jpg,.gif", class: "img-upload", hidden: true %>
       <%= f.hidden_field :image_cache %>
       <div class="img-view">
-        <% if new_post %>
-          <%= image_tag("icon/add.png") %>
-        <% else %>
+        <% if post.image? %>
           <%= image_tag post.image.thumb.url %>
+        <% else %>
+          <%= image_tag("icon/add.png") %>
         <% end %>
       </div>
     </label>
