@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  PAGELIMIT = 4
+  PAGELIMIT = 6
   before_action :authenticate_user!, except: :fetch
   before_action :verify_permission, only: [:edit, :update, :destroy]
 
