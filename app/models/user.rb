@@ -13,7 +13,8 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable, :trackable
+         :recoverable, :rememberable, :validatable, :trackable,
+         :omniauthable, omniauth_providers: [:google_oauth2, :twitter]
 
   mount_uploader :avatar, AvatarUploader
 
@@ -33,6 +34,26 @@ class User < ApplicationRecord
   end
 
   def short_name
-    first_name[0] + last_name[0]
+    (first_name == "" ? '' : first_name[0]) + (last_name == "" ? '' : last_name[0])
+  end
+
+  def active_for_authentication?
+    super and self.is_active?
+  end
+
+  def self.from_omniauth(access_token)
+    data = access_token.info
+    user = User.where(email: data['email']).first
+
+    # Uncomment the section below if you want users to be created if they don't exist
+    unless user
+      user = User.create(
+        email: data['email'],
+        first_name: data['first_name'].present? ? data['first_name'] : data['name'],
+        last_name: data['last_name'].present? ? data['last_name'] : data['name'],
+        password: Devise.friendly_token[0,20]
+      )
+    end
+    user
   end
 end

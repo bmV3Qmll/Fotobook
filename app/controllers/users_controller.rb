@@ -23,7 +23,7 @@ class UsersController < ApplicationController
     posts = @user.posts
     posts = posts.view if not @self
     photos = posts.photos
-    albums = posts.albums
+    albums = posts.albums.includes(:album_images)
     @no_photos = photos.size
     @no_albums = albums.size
 
@@ -111,6 +111,7 @@ class UsersController < ApplicationController
   end
 
   def edit
+    session[:return_to] ||= request.referer
     @resource = "edit"
     render :admin
   end
@@ -119,13 +120,13 @@ class UsersController < ApplicationController
     @resource = "edit"
     if params[:user][:password].present?
       if @user.update(user_params)
-        redirect_to '/admin/user'
+        redirect_to session.delete(:return_to)
       else
         render :admin, status: :unprocessable_entity
       end
     else
       if @user.update_without_password(user_params.except(:password))
-        redirect_to '/admin/user'
+        redirect_to session.delete(:return_to)
       else
         render :admin, status: :unprocessable_entity
       end
