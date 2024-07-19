@@ -14,8 +14,8 @@
     <div class="col-5 col-sm-7 col-md-9">
       <% if @self %>
         <a href="/users/edit" class="btn btn-outline-primary rounded-pill">Edit Profile</a>
-      <% elsif user_signed_in? %>
-        <button type="button" class="btn btn-follow rounded-pill <%= "active" if current_user.followees.exists?(@uid) %>" data-bs-toggle="button" data="<%= @user.id %>" onclick="handleFollow(event)"></button>
+      <% else %>
+        <button type="button" class="btn btn-follow rounded-pill <%= "active" if @is_followed %>" data-bs-toggle="button" data="<%= @user.id %>" onclick="handleFollow(event)"></button>
       <% end %>
       <h1 class="h1-responsive d-none d-md-block"><%= @user.full_name %></h1>
       <h4 class="h4-responsive d-md-none"><%= @user.full_name %></h4>

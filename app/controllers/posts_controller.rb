@@ -1,4 +1,5 @@
 class PostsController < ApplicationController
+  before_action :authenticate_user!
   before_action :verify_permission, only: [:edit, :update, :destroy]
 
   def new
