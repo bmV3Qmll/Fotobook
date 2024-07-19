@@ -1,0 +1,81 @@
+<% user = post.user %>
+<% modal_id = "modal" + post.id.to_s %>
+<% modal_id = feed ? "f" + modal_id : modal_id %>
+
+<div class="col-sm-6">
+  <div class="card mb-3">
+    <div class="row g-0">
+      <% if post.is_album %>
+        <div class="col-md-6 position-relative" data-bs-toggle="modal" data-bs-target="#<%= modal_id %>">
+          <%= render 'special_image', image: post.album_images.first.image.thumb.url %>
+        </div>
+      <% else %>
+        <div class="col-md-6" data-bs-toggle="modal" data-bs-target="#<%= modal_id %>">
+          <%= image_tag post.image.thumb.url, class: "card-img img-fluid" %>
+        </div>
+      <% end %>
+      <div class="col-md-6 card-body position-relative">
+        <div class="row mb-3 align-items-center">
+          <a class="nav-link col-8" href="/users/<%= user.id %>">
+            <% if user.avatar? %>
+              <%= image_tag user.avatar.small_thumb.url %>
+            <% else %>
+              <%= lavatar_tag(user.short_name, 28) %>
+            <% end %>
+            <span><%= user.full_name %></span>
+          </a>
+          <div class="col-4">
+            <% if current_user.present? and current_user != user %>
+              <button type="button" class="btn btn-follow rounded-pill float-end <%= "active" if feed or current_user.followees.exists?(user.id) %>" data-bs-toggle="button" data="<%= user.id %>" onclick="handleFollow(event)"></button>
+            <% end %>
+          </div>
+        </div>
+        <h5 class="card-title truncate"><%= post.title %></h5>
+        <p class="card-text truncate"><%= post.description %></p><br />
+        <div class="row align-items-center position-absolute bottom-0 start-0 end-0">
+          <button type="button" class="btn btn-like col-3 <%= "active" if current_user.present? and post.user_likes == 1 %>" data-bs-toggle="button" data="<%= post.id %>" onclick="handleLike(event)" <%= "disabled" if current_user.nil? %>>
+            <i class="fa fa-heart" aria-hidden="true"><%= post.likes_count %></i>
+          </button>
+          <p class="col-9 public-date text-end"><%= post.created_at.strftime("%l:%M %P %m/%d/%Y") %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="<%= modal_id %>" tabindex="-1" aria-labelledby="<%= modal_id %>Label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-3">
+      <div class="modal-header position-relative">
+        <h3 class="position-absolute start-0 text-truncate mb-0"><%= post.title %></h3>
+        <button type="button" class="btn btn-light position-absolute end-0" data-bs-dismiss="modal"><strong>X</strong></button>
+      </div>
+      <div class="modal-body mt-3">
+        <% if post.is_album %>
+          <div id="carousel<%= post.id %>" class="carousel carousel-dark slide">
+            <div class="carousel-inner">
+              <% post.album_images.each do |object| %>
+                <div class="carousel-item <%= "active" if post.album_images.first.equal?(object) %>">
+                  <%= image_tag object.image.url, class: "img-fluid" %>
+                  <%# <img src="img/twitter.png" class="d-block w-100" alt="Twitter"> %>
+                </div>
+              <% end %>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carousel<%= post.id %>" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carousel<%= post.id %>" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        <% else %>
+          <%= image_tag post.image.url, class: "img-fluid" %>
+        <% end %>
+        
+        <p class="truncate"><%= post.description %></p>
+      </div>
+    </div>
+  </div>
+</div>

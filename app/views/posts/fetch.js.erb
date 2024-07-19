@@ -1,0 +1,31 @@
+var feeds = document.getElementById('feeds-container');
+var discover = document.getElementById('discover-container');
+var loading = document.getElementById('loading');
+
+<% pad = 0 %>
+<% if @feeds %>
+  <% if @new_tab %>
+    feeds.innerHTML = '';
+  <% end %>
+  <% @posts.each do |post| %>
+    // Append each post partial to the data-container
+    feeds.insertAdjacentHTML('beforeend', '<%= j render "post", post: post, feed: @feeds %>');
+    <% pad += 1 %>
+  <% end %>
+<% else %>
+  <% if @new_tab %>
+    discover.innerHTML = '';
+  <% end %>
+  <% @posts.each do |post| %>
+    discover.insertAdjacentHTML('beforeend', '<%= j render "post", post: post, feed: @feeds %>');
+    <% pad += 1 %>
+  <% end %>
+<% end %>
+
+loading.setAttribute('data-offset', <%= @offset + pad %>);
+<% if @new_tab %>
+  loading.setAttribute('data-end', 0);
+<% end %>
+<% if pad == 0 %>
+  loading.setAttribute('data-end', 1);
+<% end %>
