@@ -39,12 +39,16 @@
     .modal-header h3 {
       max-width: 90%;
     }
+
+    #loading {
+      margin-top: -40px;
+    }
   </style>
 <% end %>
 
 <%= render "shared/menu", home: true %>
 <div class="row justify-content-center mt-2">
-  <div id="loading" class="spinner-border" data-offset="0" data-end="0"></div>
+  <div id="loading" class="spinner-border d-none" data-offset="0" data-end="0"></div>
 </div>
 
 <% content_for :js do %>
@@ -74,13 +78,13 @@
     }
     
     $(document).ready(function() {
-      var feeds_tab = document.getElementById('v-pills-feeds-tab');
-      var feeds_photo = document.getElementById('feeds-photo');
-      var feeds_album = document.getElementById('feeds-album');
+      let feeds_tab = document.getElementById('v-pills-feeds-tab');
+      let feeds_photo = document.getElementById('feeds-photo');
+      let feeds_album = document.getElementById('feeds-album');
 
-      var discover_tab = document.getElementById('v-pills-discover-tab');
-      var discover_photo = document.getElementById('discover-photo');
-      var discover_album = document.getElementById('discover-album');
+      let discover_tab = document.getElementById('v-pills-discover-tab');
+      let discover_photo = document.getElementById('discover-photo');
+      let discover_album = document.getElementById('discover-album');
 
       feeds_tab.addEventListener('click', function() {
         if (isActive(feeds_photo)) {
@@ -137,12 +141,17 @@
       <% end %>
 
       function loadMorePosts() {
-        var loading = document.getElementById('loading');
-        var end = loading.getAttribute('data-end');
+        let loading = document.getElementById('loading');
+        loading.classList.remove('d-none');
+        setTimeout(() => {
+          loading.classList.add('d-none');
+        }, 400);
+
+        let end = loading.getAttribute('data-end');
         if (end == "1") {
           return;
         }
-        var offset = loading.getAttribute('data-offset');
+        let offset = loading.getAttribute('data-offset');
 
         if (isActive(feeds_tab)) {
           if (isActive(feeds_photo)) {
