@@ -16,8 +16,9 @@ class UsersController < ApplicationController
       @self = true
     end
 
+    ids = current_user.followee_ids.to_set
     if not @self
-      @is_followed = current_user.followees.include?(@user)
+      @is_followed = ids.include?(@user.id)
     end
 
     @resource = params[:resource].present? ? params[:resource] : 'photo'
@@ -34,8 +35,13 @@ class UsersController < ApplicationController
       render plain: 'Bad Request', status: :bad_request
       return
     end
+
     if defined?(@posts)
       @posts = @posts.view if not @self
+    else
+      @users.each do |user|
+        user.is_followed = ids.include?(user.id)
+      end
     end
   end
 
