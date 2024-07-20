@@ -1,7 +1,7 @@
 class Post < ApplicationRecord
   belongs_to :user
 
-  has_many :album_images
+  has_many :album_images, dependent: :destroy
   accepts_nested_attributes_for :album_images, \
     reject_if: proc{ |param| param[:image].blank? && param[:image_cache].blank? && param[:id].blank? }, \
     allow_destroy: true
