@@ -20,32 +20,22 @@ class UsersController < ApplicationController
       @is_followed = current_user.followees.include?(@user)
     end
 
-    posts = @user.posts
-    posts = posts.view if not @self
-    photos = posts.photos
-    albums = posts.albums.includes(:album_images)
-    @no_photos = photos.size
-    @no_albums = albums.size
-
-    followees = @user.followees
-    followers = @user.followers
-    @no_followees = followees.size
-    @no_followers = followers.size
-
     @resource = params[:resource].present? ? params[:resource] : 'photo'
-
     case @resource
     when 'photo'
-      @posts = photos.paginate(page: params[:page], per_page: 8)
+      @posts = @user.posts.photos.paginate(page: params[:page], per_page: 8)
     when 'album'
-      @posts = albums.paginate(page: params[:page], per_page: 8)
+      @posts = @user.posts.albums.paginate(page: params[:page], per_page: 8).includes(:album_images)
     when 'followee'
-      @users = followees.paginate(page: params[:page], per_page: 8)
+      @users = @user.followees.paginate(page: params[:page], per_page: 8)
     when 'follower'
-      @users = followers.paginate(page: params[:page], per_page: 8)
+      @users = @user.followers.paginate(page: params[:page], per_page: 8)
     else
       render plain: 'Bad Request', status: :bad_request
       return
+    end
+    if defined?(@posts)
+      @posts = @posts.view if not @self
     end
   end
 
@@ -66,6 +56,10 @@ class UsersController < ApplicationController
       current_user.followees << target
     else     # unfollow
       current_user.followees.delete(target)
+      current_user.followees_count -= 1
+      current_user.save
+      target.followers_count -= 1
+      target.save
     end
   end
 
@@ -88,13 +82,14 @@ class UsersController < ApplicationController
       current_user.likes << target
     else     # unlike
       current_user.likes.delete(target)
+      target.likes_count -= 1
+      target.save
     end
     render plain: '1'
   end
 
   def manage
     @resource = params[:resource].present? ? params[:resource] : 'photo'
-
     case @resource
     when 'photo'
       @posts = Post.photos.paginate(page: params[:page], per_page: 40)

@@ -1,5 +1,6 @@
 class AlbumImage < ApplicationRecord
   belongs_to :post
+  counter_culture :post, column_name: "album_images_count"
 
   mount_uploader :image, ImageUploader
 

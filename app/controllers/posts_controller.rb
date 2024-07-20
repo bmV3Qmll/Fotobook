@@ -56,7 +56,7 @@ class PostsController < ApplicationController
     @posts = @posts.where(user: current_user.followee_ids) if @feeds
     @posts = @posts.includes(:user)
       .left_outer_joins(:likes)
-      .select('posts.*, COUNT(reactions.*) AS likes_count, MAX(CASE WHEN reactions.user_id = ' + cuid.to_s + ' THEN 1 ELSE 0 END) AS user_likes')
+      .select('posts.*, MAX(CASE WHEN reactions.user_id = ' + cuid.to_s + ' THEN 1 ELSE 0 END) AS user_likes')
       .group('posts.id')
 
     @posts = @posts.limit(PAGELIMIT).offset(@offset)
