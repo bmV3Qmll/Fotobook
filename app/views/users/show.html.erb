@@ -57,14 +57,14 @@
     <div class="tab-pane fade" id="nav-following" role="tabpanel" aria-labelledby="nav-following-tab" tabindex="0">
       <div class="row">
         <% if @resource == "followee" %>
-          <%= render 'card_user', users: @users %>
+          <%= render 'card_user', users: @users, is_self: @self %>
         <% end %>
       </div>
     </div>
     <div class="tab-pane fade" id="nav-follower" role="tabpanel" aria-labelledby="nav-follower-tab" tabindex="0">
       <div class="row">
         <% if @resource == "follower" %>
-          <%= render 'card_user', users: @users %>
+          <%= render 'card_user', users: @users, is_self: @self %>
         <% end %>
       </div>
     </div>

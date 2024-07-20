@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  attr_accessor :is_followed
+  
   has_many :posts, dependent: :destroy
 
   has_many :follower_follows, class_name: "Follow", foreign_key: "followee_id"
