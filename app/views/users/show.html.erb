@@ -21,10 +21,10 @@
       <h4 class="h4-responsive d-md-none"><%= @user.full_name %></h4>
       <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
-          <button class="nav-link active" id="nav-photo-tab" data-bs-toggle="tab" href="/photo" data-bs-target="#nav-photo" type="button" role="tab" aria-controls="nav-photo" aria-selected="true"><span><%= @no_photos %></span> PHOTOS</button>
-          <button class="nav-link" id="nav-album-tab" data-bs-toggle="tab" href="/album" data-bs-target="#nav-album" type="button" role="tab" aria-controls="nav-album" aria-selected="false"><span><%= @no_albums %></span> ALBUMS</button>
-          <button class="nav-link" id="nav-following-tab" data-bs-toggle="tab" href="/followee" data-bs-target="#nav-following" type="button" role="tab" aria-controls="nav-following" aria-selected="false"><span><%= @no_followees %></span> FOLLOWINGS</button>
-          <button class="nav-link" id="nav-follower-tab" data-bs-toggle="tab" href="/follower" data-bs-target="#nav-follower" type="button" role="tab" aria-controls="nav-follower" aria-selected="false"><span><%= @no_followers %></span> FOLLOWERS</button>
+          <button class="nav-link active" id="nav-photo-tab" data-bs-toggle="tab" href="/photo" data-bs-target="#nav-photo" type="button" role="tab" aria-controls="nav-photo" aria-selected="true"><span><%= @self ? @user.photos_count : @user.public_photos_count %></span> PHOTOS</button>
+          <button class="nav-link" id="nav-album-tab" data-bs-toggle="tab" href="/album" data-bs-target="#nav-album" type="button" role="tab" aria-controls="nav-album" aria-selected="false"><span><%= @self ? @user.albums_count : @user.public_albums_count %></span> ALBUMS</button>
+          <button class="nav-link" id="nav-following-tab" data-bs-toggle="tab" href="/followee" data-bs-target="#nav-following" type="button" role="tab" aria-controls="nav-following" aria-selected="false"><span><%= @user.followees_count %></span> FOLLOWINGS</button>
+          <button class="nav-link" id="nav-follower-tab" data-bs-toggle="tab" href="/follower" data-bs-target="#nav-follower" type="button" role="tab" aria-controls="nav-follower" aria-selected="false"><span><%= @user.followers_count %></span> FOLLOWERS</button>
         </div>
       </nav>
     </div>
