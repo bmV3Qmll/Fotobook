@@ -1,24 +1,14 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Fotobook Final App
 
-Things you may want to cover:
+* Ruby version: 3.1.0
 
-* Ruby version
+* Database: Postgresql 16
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+* Remaining tasks:
+- Mailer: wait for Mailgun activation
+- Twitter Omniauth: ERROR -- omniauth: (twitter) Authentication failure! undefined method `[]'
+![image](https://github.com/user-attachments/assets/d6f7b127-2780-4984-a829-b915851da661)
+![image](https://github.com/user-attachments/assets/ea9b974d-a724-4a85-8acf-72f8a61da0ff)
+- Notifications: when someone likes a Photo / Album
