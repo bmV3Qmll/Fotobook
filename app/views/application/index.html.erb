@@ -59,7 +59,7 @@
     }
 
     var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    function fetchData(feeds, resource, offset=0) {
+    function fetchData(feeds, resource, offset=0, query=null) {
       fetch('<%= fetch_path %>', {
         method: 'POST',
         headers: {
@@ -69,7 +69,8 @@
         body: JSON.stringify({
           feeds: feeds,
           resource: resource,
-          offset: offset
+          offset: offset,
+          query: query
         })
       })
       .then(response => response.text())
@@ -135,9 +136,9 @@
       });
 
       <% if user_signed_in? %>
-        fetchData(true, 'photo');
+        fetchData(true, 'photo', 0, '');
       <% else %>
-        fetchData(false, 'photo');
+        fetchData(false, 'photo', 0, '');
       <% end %>
 
       function loadMorePosts() {
@@ -178,6 +179,24 @@
       }
 
       window.addEventListener('scroll', debounce(scrolledToBottom, 500));
+      $('#searchBar').keypress(function(event) {
+        if (event.which === 13) { // 13 is the Enter key code
+          let query = $(this).val();
+          if (isActive(feeds_tab)) {
+            if (isActive(feeds_photo)) {
+              fetchData(true, 'photo', 0, query);
+            } else {
+              fetchData(true, 'album', 0, query);
+            }
+          } else {
+            if (isActive(discover_photo)) {
+              fetchData(false, 'photo', 0, query);
+            } else {
+              fetchData(false, 'album', 0, query);
+            }
+          }
+        }
+      });
     });
   </script>
 <% end %>
