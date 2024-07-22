@@ -13,9 +13,11 @@
           <%= image_tag "icon/google.png", alt: "Google", class: "visible" %>
         <% end %>
       </div>
-      <a href="#" class="col btn btn-block">
-        <%= image_tag "icon/facebook.png", alt: "Facebook" %>
-      </a>
+      <div class="col btn btn-block">
+        <%= button_to omniauth_authorize_path(:user, :facebook), data: { turbo: false }, class: "invisible" do %>
+          <%= image_tag "icon/facebook.png", alt: "Facebook", class: "visible" %>
+        <% end %>
+      </div>
       <div class="col btn btn-block">
         <%= button_to omniauth_authorize_path(:user, :twitter), data: { turbo: false }, class: "invisible" do %>
           <%= image_tag "icon/twitter.png", alt: "Twitter", class: "visible" %>
