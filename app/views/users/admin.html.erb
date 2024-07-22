@@ -135,7 +135,7 @@
             <th scope="row"><%= user.first_name %></th>
             <td><%= user.last_name %></td>
             <td><%= user.email %></td>
-            <td><%= user.last_sign_in_at.strftime("%l:%M %P %m/%d/%Y") %></td>
+            <td><%= user.last_sign_in_at.nil? ? "" : user.last_sign_in_at.strftime("%l:%M %P %m/%d/%Y") %></td>
             <td>
               <%= link_to "Edit", edit_user_path(user), class: "btn btn-success py-0" %>
               <%= link_to "Delete", user_path(user), method: :delete, class:"btn btn-danger py-0", data: {
