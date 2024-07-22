@@ -44,13 +44,19 @@ class PostsController < ApplicationController
     @offset = params[:offset].to_i
     @new_tab = @offset == 0
 
+    @posts = Post.view
     if resource == 'photo'
-      @posts = Post.view.photos
+      @posts = @posts.photos
     elsif resource == 'album'
-      @posts = Post.view.albums
+      @posts = @posts.albums
     else
       @posts = Post.none
     end
+    
+    if not params[:query].nil?
+      session[:query] = params[:query]
+    end
+    @posts = @posts.where("title LIKE ?", "#{session[:query]}%")
 
     cuid = user_signed_in? ? current_user.id : 0
     @posts = @posts.where(user: current_user.followee_ids) if @feeds

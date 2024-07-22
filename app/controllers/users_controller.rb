@@ -98,11 +98,11 @@ class UsersController < ApplicationController
     @resource = params[:resource].present? ? params[:resource] : 'photo'
     case @resource
     when 'photo'
-      @posts = Post.photos.paginate(page: params[:page], per_page: 40)
+      @posts = Post.photos.paginate(page: params[:page], per_page: 16)
     when 'album'
-      @posts = Post.albums.paginate(page: params[:page], per_page: 40)
+      @posts = Post.albums.paginate(page: params[:page], per_page: 16)
     when 'user'
-      @users = User.order(updated_at: :desc).paginate(page: params[:page], per_page: 40)
+      @users = User.order(updated_at: :desc).paginate(page: params[:page], per_page: 20)
     else
       render plain: 'Bad Request', status: :bad_request
       return
