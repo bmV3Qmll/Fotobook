@@ -86,6 +86,10 @@ class UsersController < ApplicationController
 
     if state # like
       current_user.likes << target
+      ActionCable.server.broadcast(
+        "notification_#{target.user.id}",
+        {user_name: current_user.full_name, post_title: target.title}
+      )
     else     # unlike
       current_user.likes.delete(target)
       target.likes_count -= 1
