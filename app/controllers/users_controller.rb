@@ -123,14 +123,22 @@ class UsersController < ApplicationController
 
   def update
     @resource = "edit"
+    is_previously_active = @user.is_active
+    is_set_inactive = params[:user][:is_active].present? ? (params[:user][:is_active] == "0") : false 
     if params[:user][:password].present?
       if @user.update(user_params)
+        if is_previously_active and is_set_inactive
+          UserMailer.with(user: @user, is_deleted: false).notify_email.deliver_now
+        end
         redirect_to session.delete(:return_to)
       else
         render :admin, status: :unprocessable_entity
       end
     else
       if @user.update_without_password(user_params.except(:password))
+        if is_previously_active and is_set_inactive
+          UserMailer.with(user: @user, is_deleted: false).notify_email.deliver_now
+        end
         redirect_to session.delete(:return_to)
       else
         render :admin, status: :unprocessable_entity
@@ -140,6 +148,7 @@ class UsersController < ApplicationController
 
   def destroy
     @user.destroy
+    UserMailer.with(user: @user, is_deleted: true).notify_email.deliver_now
     redirect_to '/admin/user'
   end
 

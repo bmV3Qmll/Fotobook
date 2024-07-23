@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>Good day, <%= @user.full_name %></h1>
+    <p>
+      Your account is <%= @is_deleted ? "deleted" : "set inactive" %> by the admin.<br>
+      You can no longer log into the application afterward.
+    </p>
+  </body>
+</html>
