@@ -65,7 +65,7 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "pg", "~> 1.5.6"
+gem "pg"
 gem "devise", "~> 4.9.4"
 gem "file_validators", "~> 3.0.0"
 gem "carrierwave", "~> 3.0"
