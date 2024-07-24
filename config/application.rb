@@ -28,5 +28,6 @@ module Fotobook
       html_tag
     }
     config.action_cable.mount_path = '/websocket'
+    config.action_cable.disable_request_forgery_protection = true
   end
 end
