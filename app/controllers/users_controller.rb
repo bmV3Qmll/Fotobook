@@ -147,6 +147,18 @@ class UsersController < ApplicationController
   end
 
   def destroy
+    @user.likes.each do |post|
+      post.likes_count -= 1
+      post.save
+    end
+    @user.followees.each do |user|
+      user.followers_count -= 1
+      user.save
+    end
+    @user.followers.each do |user|
+      user.followees_count -= 1
+      user.save
+    end
     @user.destroy
     UserMailer.with(user: @user, is_deleted: true).notify_email.deliver_now
     redirect_to '/admin/user'
