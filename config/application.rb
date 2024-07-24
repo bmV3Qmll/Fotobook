@@ -24,5 +24,9 @@ module Fotobook
     # config.time_zone = "Central Time (US & Canada)"
     config.time_zone = "Asia/Ho_Chi_Minh"
     # config.eager_load_paths << Rails.root.join("extras")
+    config.action_view.field_error_proc = Proc.new { |html_tag, instance| 
+      html_tag
+    }
+    config.action_cable.mount_path = '/websocket'
   end
 end
