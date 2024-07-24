@@ -2,6 +2,7 @@ class PostsController < ApplicationController
   PAGELIMIT = 6
   before_action :authenticate_user!, except: :fetch
   before_action :verify_permission, only: [:edit, :update, :destroy]
+  before_action :remember_url, only: [:new, :edit]
 
   def new
     @post = Post.new
@@ -13,11 +14,7 @@ class PostsController < ApplicationController
     params[:post][:is_album] = @is_album
     @post = current_user.posts.create(post_params)
     if @post.valid?
-      if @is_album
-        redirect_to '/users/album'
-      else
-        redirect_to '/users'
-      end
+      redirect_to session.delete(:return_to)
     else
       render :new, status: :unprocessable_entity
     end
@@ -30,11 +27,7 @@ class PostsController < ApplicationController
   def update
     @is_album = @post.is_album
     if @post.update(post_params)
-      if @is_album
-        redirect_to '/users/album'
-      else
-        redirect_to '/users'
-      end
+      redirect_to session.delete(:return_to)
     else
       render :edit, status: :unprocessable_entity
     end
@@ -51,19 +44,25 @@ class PostsController < ApplicationController
     @offset = params[:offset].to_i
     @new_tab = @offset == 0
 
+    @posts = Post.view
     if resource == 'photo'
-      @posts = Post.view.photos
+      @posts = @posts.photos
     elsif resource == 'album'
-      @posts = Post.view.albums
+      @posts = @posts.albums
     else
       @posts = Post.none
     end
+    
+    if not params[:query].nil?
+      session[:query] = params[:query]
+    end
+    @posts = @posts.where("title LIKE ?", "#{session[:query]}%")
 
     cuid = user_signed_in? ? current_user.id : 0
     @posts = @posts.where(user: current_user.followee_ids) if @feeds
     @posts = @posts.includes(:user)
       .left_outer_joins(:likes)
-      .select('posts.*, COUNT(reactions.*) AS likes_count, MAX(CASE WHEN reactions.user_id = ' + cuid.to_s + ' THEN 1 ELSE 0 END) AS user_likes')
+      .select('posts.*, MAX(CASE WHEN reactions.user_id = ' + cuid.to_s + ' THEN 1 ELSE 0 END) AS user_likes')
       .group('posts.id')
 
     @posts = @posts.limit(PAGELIMIT).offset(@offset)
@@ -84,5 +83,9 @@ class PostsController < ApplicationController
         render plain: 'Unauthorized Access', status: 401
         return
       end
+    end
+
+    def remember_url
+      session[:return_to] ||= request.referer
     end
 end

@@ -3,30 +3,7 @@
 <% other = !(ihome or guest) %>
 
 <% content_for :css do %>
-  <style type="text/css">
-    #sidebar button {
-      background-color: transparent;
-      border: none;
-      font-size: 16px;
-      font-weight: bold;
-      color: #6c757d;
-      &.active {
-        color: #0d6efd;
-      }
-      &:hover {
-        background-color: #b9b9b9;
-      }
-    }
-
-    .btn-theme {
-      color: #fff;
-      background-color: #0a58ca;
-      &.active {
-        color: #0a58ca;
-        background-color: #fff;
-      }
-    }
-  </style>
+  <%= stylesheet_link_tag "menu" %>
 <% end %>
 
 <div class="container-fluid row m-0">

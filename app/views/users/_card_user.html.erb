@@ -35,11 +35,11 @@
           <h5 class="card-title mb-0 text-muted"><%= user.full_name %></h5>
         </a>
         <ul class="list-group list-group-horizontal justify-content-evenly">
-          <li class="list-group-item"><span><%= user.posts.photos.count %></span><br> PHOTOS</li>
-          <li class="list-group-item"><span><%= user.posts.albums.count %></span><br> ALBUMS</li>
+          <li class="list-group-item"><span><%= user.public_photos_count %></span><br> PHOTOS</li>
+          <li class="list-group-item"><span><%= user.public_albums_count %></span><br> ALBUMS</li>
         </ul>
         <div class="text-center">
-          <button type="button" class="btn btn-follow rounded-pill <%= "active" if current_user.followees.exists?(user.id) %>" data-bs-toggle="button" data="<%= user.id %>" onclick="handleFollow(event)" <%= "disabled" if not @self %>></button>
+          <button type="button" class="btn btn-follow rounded-pill <%= "active" if user.is_followed %>" data-bs-toggle="button" data="<%= user.id %>" onclick="handleFollow(event)" <%= "disabled" if not is_self %>></button>
         </div>
       </div>
     </div>

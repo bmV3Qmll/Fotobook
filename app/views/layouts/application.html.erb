@@ -38,9 +38,7 @@
           </button>
           <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
             <div class="col-md-6">
-              <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search Photo / Album" aria-label="Search">
-              </form>
+              <input id="searchBar" class="form-control me-2" type="search" placeholder="Search Photo / Album" aria-label="Search">
             </div>
               <% if user_signed_in? %>
                 <div class="col-8 col-md-4 col-lg-3">
@@ -73,6 +71,18 @@
     <p class="notice d-none"><%= notice %></p>
     <p class="alert d-none"><%= alert %></p>
     <%= yield %>
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+          <strong class="me-auto">Fotobook</strong>
+          <small>Recently</small>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          Someone likes your post.
+        </div>
+      </div>
+    </div>
     <%= yield :js %>
   </body>
 </html>

@@ -1,0 +1,202 @@
+<% photo = @resource == "photo" %>
+<% album = @resource == "album" %>
+<% user = @resource == "user" %>
+<% edit = @resource == "edit" %>
+<% user = user ? true : edit %>
+
+
+<% content_for :css do %>
+  <%= stylesheet_link_tag "menu" %>
+  <% if edit %>
+    <%= stylesheet_link_tag "users" %>
+  <% end %>
+<% end %>
+
+<div class="container-fluid row m-0">
+  <div id="sidebar" class="col-lg-2 mt-3">
+    <div class="nav flex-column nav-pills me-3" aria-orientation="vertical">
+      <button class="nav-link text-start <%= "active" if photo %>" type="button" href="/photo">Manage Photos</button>
+      <button class="nav-link text-start <%= "active" if album %>" type="button" href="/album">Manage Albums</button>
+      <button class="nav-link text-start <%= "active" if user %>" type="button" href="/user">Manage Users</button>
+    </div>
+  </div>
+  <main class="col-lg-8 mt-3 bg-light p-4">
+    <% if photo %>
+      <div class="row">
+        <%= render 'admin_post', posts: @posts, is_album: false %>
+      </div>
+    <% elsif album %>
+      <div class="row">
+        <%= render 'admin_post', posts: @posts, is_album: true %>
+      </div>
+    <% elsif edit %>
+      <legend>
+        <div class="row justify-content-between mb-3">
+          <div class="col-8">
+            Edit User Profile
+          </div>
+          <div class="col-4 text-end">
+            <%= link_to "Back", :back, class: "btn btn-primary" %>
+          </div>
+        </div>
+      </legend>
+      <div class="container-fluid text-center">
+        <div class="row justify-content-center">
+          <%= form_with model: @user do |f| %>
+            <label for="user_avatar" class="drop-area position-relative">
+              <%= f.file_field :avatar, accept: ".png,.jpeg,.jpg,.gif", class: "img-upload", hidden: true %><br>
+              <%= f.hidden_field :avatar_cache %>
+              <div class="img-view">
+                <% if @user.avatar? %>
+                  <%= image_tag @user.avatar.thumb.url class: "img-thumbnail mb-3" %>
+                <% else %>
+                  <%= lavatar_tag(@user.short_name, 200) %>
+                <% end %>
+              </div>
+              <div class="btn-change">Change</div>
+            </label>
+
+            <h5 class="mt-4">Basic Information</h5>
+            <div class="row g-3 justify-content-center align-items-center mt-0">
+              <div class="col-4 col-md-2 text-end">
+                <%= f.label :first_name, "First Name", class: "form-label mb-0" %>
+              </div>
+              <div class="col-8 col-sm-6 col-md-4">
+                <%= f.text_field :first_name, class: "form-control", id: "firstname" %>
+              </div>
+            </div>
+            <% @user.errors.full_messages_for(:first_name).each do |message| %>
+              <div><%= message %></div>
+            <% end %>
+
+            <div class="row g-3 justify-content-center align-items-center mt-0">
+              <div class="col-4 col-md-2 text-end">
+                <%= f.label :last_name, "Last Name", class: "form-label mb-0" %>
+              </div>
+              <div class="col-8 col-sm-6 col-md-4">
+                <%= f.text_field :last_name, class: "form-control", id: "lastname" %>
+              </div>
+            </div>
+            <% @user.errors.full_messages_for(:last_name).each do |message| %>
+              <div><%= message %></div>
+            <% end %>
+
+            <div class="row g-3 justify-content-center align-items-center mt-0">
+              <div class="col-4 col-md-2 text-end">
+                <%= f.label :email, "Email", class: "form-label mb-0" %>
+              </div>
+              <div class="col-8 col-sm-6 col-md-4">
+                <%= f.email_field :email, autocomplete: "email", class: "form-control", id: "email" %>
+              </div>
+            </div>
+            <% @user.errors.full_messages_for(:email).each do |message| %>
+              <div><%= message %></div>
+            <% end %>
+
+            <div class="row g-3 justify-content-center align-items-center mt-0">
+              <div class="col-4 col-md-2 text-end">
+                <%= f.label :password, "Password", class: "form-label mb-0" %>
+              </div>
+              <div class="col-8 col-sm-6 col-md-4">
+                <%= f.password_field :password, autocomplete: "new-password", class: "form-control", id: "new_password", placeholder: "********"%>
+              </div>
+            </div>
+            <% @user.errors.full_messages_for(:password).each do |message| %>
+              <div><%= message %></div>
+            <% end %>
+
+            <div class="row g-3 justify-content-center align-items-center mt-0">
+              <div class="col-4 col-md-2 text-end">
+                <%= f.label :is_active, "Active?", class: "form-label mb-0" %>
+              </div>
+              <div class="col-8 col-sm-6 col-md-4 text-start">
+                <%= f.check_box :is_active, id: "is_active" %>
+              </div>
+            </div>
+
+            <%= f.submit "Save", class: "btn btn-success col-1 mt-3" %>
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col" width="15%">First Name</th>
+            <th scope="col" width="15%">Last Name</th>
+            <th scope="col" width="30%">Email</th>
+            <th scope="col" width="20%">Last Login</th>
+            <th scope="col" width="20%"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @users.each do |user| %>
+          <tr>
+            <th scope="row"><%= user.first_name %></th>
+            <td><%= user.last_name %></td>
+            <td><%= user.email %></td>
+            <td><%= user.last_sign_in_at.nil? ? "" : user.last_sign_in_at.strftime("%l:%M %P %m/%d/%Y") %></td>
+            <td>
+              <%= link_to "Edit", edit_user_path(user), class: "btn btn-success py-0" %>
+              <%= link_to "Delete", user_path(user), method: :delete, class:"btn btn-danger py-0", data: {
+                turbo_method: :delete,
+                turbo_confirm: "Are you sure?"
+              } %>
+            </td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <%= will_paginate @users, class: "d-flex justify-content-center digg_pagination" %>
+    <% end %>
+  </main>
+</div>
+
+<script>
+  var url = location.href.replace(/\/$/, "");
+
+  // Remove hash part (if any)
+  var hashIndex = url.indexOf('#');
+  if (hashIndex !== -1) {
+    url = url.substring(0, hashIndex);
+  }
+
+  // Remove query parameter part (if any)
+  var queryIndex = url.indexOf('?');
+  if (queryIndex !== -1) {
+    url = url.substring(0, queryIndex);
+  }
+
+  var idx = url.indexOf('admin')
+  var resource = url.slice(idx + 6).split('/').shift();
+  var tabSelector = document.querySelector('.nav button[href="/' + resource + '"]');
+  if (resource == "edit") {
+    tabSelector = document.querySelector('.nav :last-child');
+  } else if (tabSelector == null) {
+    tabSelector = document.querySelector('.nav :first-child');
+    resource = "photo";
+  }
+
+  tabSelector.click();
+
+  url = url.slice(0, idx + 5);
+
+  var tabLinks = document.querySelectorAll('.nav button.nav-link');
+  tabLinks.forEach(function(tabLink) {
+    tabLink.addEventListener('click', function() {
+      let newUrl;
+      let newResource = this.getAttribute('href');
+      
+      if (newResource == resource) {
+        return;
+      }
+      newUrl = url + newResource + '/';
+
+      location.href = newUrl;
+    });
+  });
+</script>
+
+<% if edit %>
+  <%= javascript_include_tag "image" %>
+<% end %>
