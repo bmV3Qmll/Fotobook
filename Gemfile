@@ -65,10 +65,11 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "pg"
+gem "pg", "~> 1.5.6"
 gem "devise", "~> 4.9.4"
 gem "file_validators", "~> 3.0.0"
 gem "carrierwave", "~> 3.0"
+gem "cloudinary", "~> 2.1.1"
 gem "lavatar", "~> 0.1.5"
 gem "will_paginate", "~> 4.0"
 gem "cocoon", "~> 1.2.15"
