@@ -27,7 +27,5 @@ module Fotobook
     config.action_view.field_error_proc = Proc.new { |html_tag, instance| 
       html_tag
     }
-    config.action_cable.mount_path = '/websocket'
-    config.action_cable.disable_request_forgery_protection = true
   end
 end
