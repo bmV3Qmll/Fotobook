@@ -18,7 +18,7 @@ class Post < ApplicationRecord
     reject_if: proc{ |param| param[:image].blank? && param[:image_cache].blank? && param[:id].blank? }, \
     allow_destroy: true
 
-  has_many :reactions
+  has_many :reactions, dependent: :delete_all
   has_many :likes, class_name: "User", through: :reactions, :source => :user
 
   mount_uploader :image, ImageUploader
